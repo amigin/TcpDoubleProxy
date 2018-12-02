@@ -13,3 +13,7 @@ The best case scenario.
 4. Make sure that ClientPart and Server Part are connected;
 4. Run ssh in portforward mode;
 5. Have access to the home resource which is behind firewall;
+
+
+![alt text](https://raw.githubusercontent.com/amigin/TcpDoubleProxy/master/DoubleProxy.png)
+
