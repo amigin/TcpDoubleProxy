@@ -35,7 +35,9 @@ namespace ServerPart
             while (true)
             {
                 ConsoleUi.DrawUi(serviceListenSocket, technicalListenSocket);
-                Thread.Sleep(3000);
+                Console.WriteLine();
+                Console.WriteLine("Press any key to refresh...");
+                Console.ReadKey();
             }
 
         }

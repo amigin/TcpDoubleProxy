@@ -34,7 +34,9 @@ namespace ClientPart
             while (true)
             {
                 ConsoleUi.DrawUi(serviceSocket, techSocket);
-                Thread.Sleep(3000);
+                Console.WriteLine();
+                Console.WriteLine("Press any key to refresh...");
+                Console.ReadKey();
             }
         }
     }
