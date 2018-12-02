@@ -15,7 +15,7 @@ namespace CommonPart.TechSocket
 
         private Task _theTask;
 
-        public int SocketId { get; private set; }
+        public int SocketId { get; }
         public int ReceivedBytes { get; private set; }
         public int SentBytes { get; private set; }
 
@@ -81,7 +81,10 @@ namespace CommonPart.TechSocket
               //  Console.WriteLine("Error Handling Socket Data under tech socket. "+e.Message);
             }
         }
-         
+
+
+
+        private static readonly byte[] PongResponse = {SocketCommands.CommandPong};
 
         public async ValueTask HandleServiceSocketReadAsync()
         {
@@ -104,7 +107,7 @@ namespace CommonPart.TechSocket
                     break;
                     
                 case SocketCommands.CommandPing:
-                    await _stream.WriteAsync(command, 0, 1);
+                    await _stream.WriteAsync(PongResponse);
                     break;
                     
             } 

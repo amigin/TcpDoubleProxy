@@ -1,6 +1,6 @@
 using System;
 
-namespace CommonPart
+namespace CommonPart.TechSocket
 {
     public static class TechSocketUtils
     {
