@@ -23,8 +23,30 @@ namespace ClientPart.TechnicalSocket
 
 
         private bool _working;
-        
 
+
+
+        private async Task PingThreadAsync(Tuple<TechSocketConnection, TcpClient> connection)
+        {
+
+            const int pingTimeout = 15;
+
+            while (true)
+            {
+
+                await connection.Item1.SendPingAsync();
+
+                if ((DateTime.UtcNow - connection.Item1.LastReceivedDataDateTime).TotalSeconds > pingTimeout)
+                {
+                    connection.Item2.Close();
+                    throw new Exception("No income packets for more then {PingTimeout} seconds. Disconnect");
+                }
+
+                await Task.Delay(5000);
+
+            }
+            
+        }
         
 
         
@@ -42,8 +64,10 @@ namespace ClientPart.TechnicalSocket
                     
                     _currentConnection = new Tuple<TechSocketConnection, TcpClient>(connection, clientSocket);
             
-                    await connection.StartAsync();
-                    
+                    connection.Start();
+
+                    await PingThreadAsync(_currentConnection);
+
                 }
                 catch (Exception e)
                 {

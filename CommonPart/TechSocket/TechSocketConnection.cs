@@ -13,11 +13,13 @@ namespace CommonPart.TechSocket
 
         private bool _connected = true;
 
-        private Task _theTask;
+        public Task TheTask { get; private set; }
 
         public int SocketId { get; }
         public int ReceivedBytes { get; private set; }
         public int SentBytes { get; private set; }
+        
+        public DateTime LastReceivedDataDateTime { get; private set; }
 
         public TechSocketConnection(Stream stream, ISocketHandler socketHandler, int techSocketId, Action<int> techSocketDisconnected)
         {
@@ -29,13 +31,8 @@ namespace CommonPart.TechSocket
         
         public void Start()
         {
-            _theTask = HandlerReadThreadAsync();
-        }
-        
-        public Task StartAsync()
-        {
-            Start();
-            return _theTask;
+            LastReceivedDataDateTime = DateTime.UtcNow;
+            TheTask = HandlerReadThreadAsync();
         }
          
         private async ValueTask HandleSocketConnectedCommandAsync()
@@ -88,7 +85,8 @@ namespace CommonPart.TechSocket
 
         public async ValueTask HandleServiceSocketReadAsync()
         {
-            var command = await _stream.ReadFromSocketAsync(1);                
+            var command = await _stream.ReadFromSocketAsync(1);   
+            LastReceivedDataDateTime = DateTime.UtcNow;
 
 
             switch (command[0])
@@ -132,7 +130,16 @@ namespace CommonPart.TechSocket
             }
         }
 
-      
+
+
+
+        private static readonly byte[] PingPacket = {SocketCommands.CommandPing};
+
+
+        public async ValueTask SendPingAsync()
+        {
+            await _stream.WriteAsync(PingPacket);
+        }
 
 
 
