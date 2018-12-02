@@ -10,17 +10,26 @@ namespace ClientPart
     {
         static void Main(string[] args)
         {
-            
-            var techSocket = new TechnicalClientSocket("127.0.0.1", 5666);
+            if (args.Length < 2)
+            {
+                Console.WriteLine("Please specify Service ip:port and Tech ip:port. Ex: dotnet run 192.168.1.5:5666 127.0.0.1:5656 ");
+                return;
+            }
 
-            var serviceSocket = new ServiceClientSocket("192.168.1.50", 3389);
+            var srvSocketIp = args[0].Split(':')[0];
+            var srvSocketPort = int.Parse(args[0].Split(':')[1]);
 
+            var techSocketIp = args[1].Split(':')[0];
+            var techSocketPort = int.Parse(args[1].Split(':')[1]);
+
+            var techSocket = new TechnicalClientSocket(techSocketIp, techSocketPort);
+            var serviceSocket = new ServiceClientSocket(srvSocketIp, srvSocketPort);
 
             techSocket.BindToSocket(serviceSocket);
             serviceSocket.BindToSocket(techSocket);
-            
+
             techSocket.Start();
-            
+
             Console.WriteLine("Started tech Socket...");
             while (true)
             {
